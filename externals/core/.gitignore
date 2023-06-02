@@ -1,0 +1,5 @@
+# build folder
+build/
+
+# generated files
+generated_test_smooth_*

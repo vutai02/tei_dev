@@ -1,0 +1,8 @@
+target remote :3333
+set remote hardware-watchpoint-limit 2
+mon reset halt
+# mon program_esp32 /Users/luutran/Documents/luutran/working/projects/skytech/iot_touch/build/iot_touch.bin 0x10000 verify
+# mon reset halt
+flushregs
+thb app_main
+c

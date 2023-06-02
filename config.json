@@ -1,0 +1,35 @@
+{
+    "device": {
+        "id": "TOUCH-",
+        "token": "00e0dcfa-6b46-11e9-a923-1681be663d3e"
+    },
+    "mqtt": {
+        "enable": true,
+        "server": "mdash.net:8883",
+        "client_id": "",
+        "user": "d1",
+        "pass": "UBXeQ4S6y38MN8LPMWGsmA",
+        "reconnect_timeout_min": 2,
+        "reconnect_timeout_max": 60,
+        "ssl_cert": "",
+        "ssl_key": "",
+        "ssl_ca_cert": "ca.pem",
+        "ssl_cipher_suites": "",
+        "ssl_psk_identity": "",
+        "ssl_psk_key": "",
+        "clean_session": true,
+        "keep_alive": 60,
+        "will_topic": "",
+        "will_message": "",
+        "max_qos": 2,
+        "recv_mbuf_limit": 8192,
+        "require_time": false,
+        "cloud_events": true
+    },
+    "wifi": {
+        "sta": {
+            "ssid": "fake",
+            "pass": "0123456789q"
+        }
+    }
+}

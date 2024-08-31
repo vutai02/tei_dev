@@ -18,11 +18,7 @@ set(SOURCES main.cpp
   common/digital/DigitalOutputValue.h
   common/digital/SensitivityTouchValue.h
   common/digital/DigitalStatusValue.h
-  io/IoTouchController.h
-  io/IoTouchController.cpp
-  io/touch_pad/iot_touchpad.h
-  io/touch_pad/iot_touchpad.cpp
-  io/touch_pad/touchpad.c
+ 
   schedules/CronAlarms.h
   schedules/CronAlarms.cpp
   common/SyncTimerSer.h

@@ -2,7 +2,7 @@
 
 #include "esp_sleep.h"
 #include "esp_system.h"
-#include "esp32/rom/rtc.h"
+#include "esp32s3/rom/rtc.h"
 
 namespace iotTouch::system
 {

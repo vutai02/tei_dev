@@ -3,7 +3,7 @@
 #include <smooth/core/task_priorities.h>
 #include "Ota.h"
 #include "esp_sleep.h"
-#include "esp32/rom/rtc.h"
+#include "esp32s3/rom/rtc.h"
 #include "freertos/event_groups.h"
 #include <esp_system.h>
 #include "common/ConstantType.h"

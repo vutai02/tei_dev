@@ -17,7 +17,7 @@
 
 #include "metroController/MetroController.h"
 #include "schedules/SchedulesController.h"
-#include "io/IoTouchController.h"
+// #include "io/IoTouchController.h"
 #include "led/LedController.h"
 #include "utils/CommandDispatcher.h"
 #include "storage/Storage.h"
@@ -32,14 +32,14 @@ namespace iotTouch
   using Proto = smooth::application::network::http::HTTPProtocol;
   using ExpiredQueue = smooth::core::ipc::TaskEventQueue<smooth::core::timer::TimerExpiredEvent>;
   using NetworkStatusQueue =
-    smooth::core::ipc::SubscribingTaskEventQueue<smooth::core::network::NetworkStatus>;
+      smooth::core::ipc::SubscribingTaskEventQueue<smooth::core::network::NetworkStatus>;
 
   class App : public smooth::core::Application,
-    public smooth::core::ipc::IEventListener<smooth::core::network::event::TransmitBufferEmptyEvent>,
-    public smooth::core::ipc::IEventListener<smooth::core::network::event::DataAvailableEvent<Proto>>,
-    public smooth::core::ipc::IEventListener<smooth::core::network::event::ConnectionStatusEvent>,
-    public smooth::core::ipc::IEventListener<smooth::core::network::NetworkStatus>,
-    public smooth::application::network::http::IServerResponse
+              public smooth::core::ipc::IEventListener<smooth::core::network::event::TransmitBufferEmptyEvent>,
+              public smooth::core::ipc::IEventListener<smooth::core::network::event::DataAvailableEvent<Proto>>,
+              public smooth::core::ipc::IEventListener<smooth::core::network::event::ConnectionStatusEvent>,
+              public smooth::core::ipc::IEventListener<smooth::core::network::NetworkStatus>,
+              public smooth::application::network::http::IServerResponse
   {
   public:
     App();
@@ -48,19 +48,19 @@ namespace iotTouch
 
     void tick() override;
 
-    void event(const smooth::core::network::event::TransmitBufferEmptyEvent&) override;
+    void event(const smooth::core::network::event::TransmitBufferEmptyEvent &) override;
 
-    void event(const smooth::core::network::event::DataAvailableEvent<Proto>&) override;
+    void event(const smooth::core::network::event::DataAvailableEvent<Proto> &) override;
 
-    void event(const smooth::core::network::event::ConnectionStatusEvent&) override;
+    void event(const smooth::core::network::event::ConnectionStatusEvent &) override;
 
-    void event(const smooth::core::network::NetworkStatus& ev) override;
-    
+    void event(const smooth::core::network::NetworkStatus &ev) override;
+
     void reply(std::unique_ptr<smooth::application::network::http::IResponseOperation>, bool) override {}
 
-    void reply_error(std::unique_ptr<smooth::application::network::http::IResponseOperation> ) override {}
+    void reply_error(std::unique_ptr<smooth::application::network::http::IResponseOperation>) override {}
 
-    smooth::core::Task& get_task() override
+    smooth::core::Task &get_task() override
     {
       return *this;
     }
@@ -72,20 +72,20 @@ namespace iotTouch
     void prepare_config();
     void start_connect_server();
     std::shared_ptr<smooth::core::network::BufferContainer<Proto>> buff_;
-    #if IS_SSL_REST_API == 0
+#if IS_SSL_REST_API == 0
     std::shared_ptr<smooth::core::network::Socket<Proto>> sock_{};
-    #else
+#else
     std::shared_ptr<smooth::core::network::SecureSocket<Proto>> sock_{};
     std::unique_ptr<smooth::core::network::MBedTLSContext> tls_context{};
-    #endif
+#endif
     std::vector<uint8_t> received_content_{};
 
     std::unique_ptr<Mqtt> mqtt_{};
     iotTouch::CommandDispatcher cmd_{};
-    
+
     std::shared_ptr<NetworkStatusQueue> network_status_;
 
-    IoTouchControllerTask io_;
+    // IoTouchControllerTask io_;
     SchedulesController schedules_;
     iotTouch::DeviceId id_;
     iotTouch::network::Sntp sntp_;

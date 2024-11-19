@@ -7,7 +7,7 @@ if(${ESP_PLATFORM})
     # Include core as a component
     set(EXTRA_COMPONENT_DIRS
             externals/core/smooth_component)
-    project(street_lights_esp32s3)
+    project(board_ship_V2)
 else()
     if(${APPLE})
     include_directories(SYSTEM /usr/local/include)

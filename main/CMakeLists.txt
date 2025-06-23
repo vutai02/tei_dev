@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_STANDARD 17)
-
+set(EXCLUDE_COMPONENTS freemodbus)
 include(${CMAKE_CURRENT_LIST_DIR}/files.cmake)
 
 idf_component_register(SRCS ${SOURCES}

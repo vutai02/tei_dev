@@ -19,7 +19,7 @@
 #include "common/EventPending.hpp"
 #include "utils/Utils.h"
 
-namespace iotTouch
+namespace fireAlarm
 {
   using DatatoMetroQueue = smooth::core::ipc::SubscribingTaskEventQueue<ObjectDataSendToMetro>;
   using DigitalInputValueQueue = smooth::core::ipc::SubscribingTaskEventQueue<DigitalInputValue>;
@@ -62,8 +62,8 @@ namespace iotTouch
       smooth::core::timer::TimerOwner timer_;
       int cnt_timer_ = 0;
       int cnt_reset_mode_timer_ = 0;
-      iotTouch::Utils utils_;
-      iotTouch::system::SystemHelper helper_;
+      fireAlarm::Utils utils_;
+      fireAlarm::system::SystemHelper helper_;
       std::string id_package {};
       std::string id_syc_ {};
       void res2Server(const nlohmann::json& v, const std::string& action = "Update", const std::string& id = "");

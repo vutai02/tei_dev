@@ -13,10 +13,10 @@ using namespace smooth::core::util;
 using namespace smooth::core::logging;
 using namespace smooth::core::json_util;
 
-using namespace iotTouch::storage;
-using namespace iotTouch::common;
+using namespace fireAlarm::storage;
+using namespace fireAlarm::common;
 
-namespace iotTouch
+namespace fireAlarm
 {
   class DataCache
   {

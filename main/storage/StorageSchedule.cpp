@@ -5,12 +5,12 @@
 #include <smooth/core/util/json_util.h>
 #include "common/ConfigConstant.h"
 
-using namespace iotTouch::common;
+using namespace fireAlarm::common;
 using namespace smooth::core::json;
 using namespace smooth::core::logging;
 using namespace smooth::core::json_util;
 using namespace smooth::core::filesystem;
-namespace iotTouch::storage
+namespace fireAlarm::storage
 {
   StorageSchedule::StorageSchedule()
     :f_(FlashMount::instance().mount_point() / "_sch.jsn")

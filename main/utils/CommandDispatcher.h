@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <functional>
 
-namespace iotTouch
+namespace fireAlarm
 {
   typedef std::function<void(const std::string& command, const std::string& data, const std::string& id_package)> Executor;
 
@@ -17,3 +17,4 @@ namespace iotTouch
       std::unordered_map<std::string, Executor> execs{};
   };
 }
+

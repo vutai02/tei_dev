@@ -18,7 +18,10 @@ limitations under the License.
 #pragma once
 
 #include <nlohmann/json.hpp>
-
+// json key:value
+// json v[DATA] = true
+// int a =4 in b = 5
+// bool c = (a > b) ? true : false;
 namespace smooth::core::json_util
 {
     /// \brief Workaround for json::value() throwing when object is null even though

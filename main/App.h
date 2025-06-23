@@ -14,10 +14,10 @@
 #include <smooth/core/io/Output.h>
 #include <nlohmann/json.hpp>
 #include <functional>
-
+#include "network/Ethernet.h"
 #include "metroController/MetroController.h"
 #include "schedules/SchedulesController.h"
-// #include "io/IoTouchController.h"
+#include "io/IoController.h"
 #include "led/LedController.h"
 #include "utils/CommandDispatcher.h"
 #include "storage/Storage.h"
@@ -26,8 +26,8 @@
 #include "network/Mqtt.h"
 #include "utils/DeviceId.h"
 #include "ota/Ota.h"
-
-namespace iotTouch
+#include "rs485/rs485.h"
+namespace fireAlarm
 {
   using Proto = smooth::application::network::http::HTTPProtocol;
   using ExpiredQueue = smooth::core::ipc::TaskEventQueue<smooth::core::timer::TimerExpiredEvent>;
@@ -81,20 +81,25 @@ namespace iotTouch
     std::vector<uint8_t> received_content_{};
 
     std::unique_ptr<Mqtt> mqtt_{};
-    iotTouch::CommandDispatcher cmd_{};
+    fireAlarm::CommandDispatcher cmd_{};
 
     std::shared_ptr<NetworkStatusQueue> network_status_;
 
-    // IoTouchControllerTask io_;
+    IoControllerTask io_;
     SchedulesController schedules_;
-    iotTouch::DeviceId id_;
-    iotTouch::network::Sntp sntp_;
-    iotTouch::network::WifiAdapter wifi_;
+    fireAlarm::DeviceId id_;
+    fireAlarm::network::Sntp sntp_;
+    fireAlarm::network::WifiAdapter wifi_;
     Storage storage_;
-    iotTouch::ota::Ota ota_;
-    iotTouch::MetroController metro_;
+    fireAlarm::ota::Ota ota_;
+    fireAlarm::MetroController metro_;
     led::LedController led_;
+    fireAlarm::network::EthAdapter EthAdapter_;
 
+    // fireAlarm::MBTask Master_rs485_;
+
+    fireAlarm::MBTask rs485_; //MASTER
+    // fireAlarm::MBTask RS485_;
     void pairActivate();
     void getConfigServer();
     void establishSocketHttp();

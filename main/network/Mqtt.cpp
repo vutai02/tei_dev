@@ -12,11 +12,11 @@
 #include "common/ConfigConstant.h"
 #include "storage/StorageInfoDevice.h"
 
-using namespace iotTouch::storage;
+using namespace fireAlarm::storage;
 
 using namespace std::chrono;
 using namespace smooth::core;
-using namespace iotTouch::common;
+using namespace fireAlarm::common;
 using namespace smooth::core::ipc;
 using namespace smooth::core::json;
 using namespace smooth::core::network;
@@ -27,7 +27,7 @@ using namespace smooth::application::network::mqtt;
 
 Mqtt::Mqtt(std::string id,
   smooth::core::Task& task,
-  iotTouch::CommandDispatcher& cmd)
+  fireAlarm::CommandDispatcher& cmd)
   : task_(task),
     cmd_(cmd),
     incoming_mqtt_(MQTTQueue::create(10, task_, *this)),
@@ -48,11 +48,11 @@ void Mqtt::start()
   if(!client_) {
     bool mqtt_enable = true;
     auto keep_alive = std::chrono::seconds(120);
-    std::string broker = iotTouch::DataCache::instance().get(MQTT_ENDPOINT);
-    int port = stoi(iotTouch::DataCache::instance().get(MQTT_PORT));
+    std::string broker = fireAlarm::DataCache::instance().get(MQTT_ENDPOINT);
+    int port = stoi(fireAlarm::DataCache::instance().get(MQTT_PORT));
 
-    std::string username = iotTouch::DataCache::instance().get(USER);
-    std::string password = iotTouch::DataCache::instance().get(PASS);
+    std::string username = fireAlarm::DataCache::instance().get(USER);
+    std::string password = fireAlarm::DataCache::instance().get(PASS);
     
     if (mqtt_enable) {
       if (broker.empty()) {
@@ -70,7 +70,7 @@ void Mqtt::start()
           incoming_mqtt_
         );
 
-        if (iotTouch::DataCache::instance().get(SCHEME) == "mqtts") {
+        if (fireAlarm::DataCache::instance().get(SCHEME) == "mqtts") {
           auto ca_cert = get_certs();
           client_->load_certificate(*ca_cert);
         }
@@ -176,12 +176,12 @@ void Mqtt::event(const ObjectDataDev2Ser &value)
     }
 
     auto& data = v[DATA];
-    data[ID] = iotTouch::DataCache::instance().get(USER);
+    data[ID] = fireAlarm::DataCache::instance().get(USER);
     data[SOURCE] = "Device";
     data[ACTION] = value.get_action();
     data[DATA] = value.get_json();
     std::string topicNotify = "channels/";
-    topicNotify.append(iotTouch::DataCache::instance().get("notify"));
+    topicNotify.append(fireAlarm::DataCache::instance().get("notify"));
     topicNotify.append("/messages");
     
     smooth::application::network::mqtt::QoS qos = AT_LEAST_ONCE;

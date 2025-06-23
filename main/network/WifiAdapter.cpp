@@ -8,15 +8,15 @@
 #include "common/ConfigConstant.h"
 #include "utils/DataCache.hpp"
 
-using namespace iotTouch::storage;
-using namespace iotTouch::common;
+using namespace fireAlarm::storage;
+using namespace fireAlarm::common;
 using namespace smooth::core::json;
 using namespace smooth::core::util;
 using namespace smooth::core::logging;
 using namespace smooth::core::json_util;
 using namespace smooth::core::filesystem;
 
-namespace iotTouch
+namespace fireAlarm
 {
   namespace network
   {
@@ -25,9 +25,11 @@ namespace iotTouch
       wifi_ = app_.get_wifi();
       wifi_->set_host_name(id_.get());
       wifi_->set_auto_connect(true);
+      Log::info("WifiAdapter", "Wi-Fi started with hostname: {}", id_.get());
 
-      int mode = atoi(iotTouch::DataCache::instance().get(WIFI_MODE).c_str());
-      setWifiMode(mode);
+      int mode = atoi(fireAlarm::DataCache::instance().get(WIFI_MODE).c_str());
+      setWifiMode(0);
+      Log::info("WifiAdapter", "Wi-Fi Mode: {}", 0);
       sntp_.start();
     }
 
@@ -48,25 +50,42 @@ namespace iotTouch
 
     void WifiAdapter::setWifiMode(int mode)
     {
-      if (mode == WifiMode::ap_mode) { // ap 
-        auto cache_ssid = StorageNvsE::instance().read(SSID);
-        auto cache_pass = StorageNvsE::instance().read(KEY);
+      if (mode == WifiMode::ap_mode) {
+        // auto cache_ssid = StorageNvsE::instance().read(SSID);
+        // auto cache_pass = StorageNvsE::instance().read(KEY);
+        std::string cache_ssid = "47K1";
+        std::string cache_pass = "99999999";
+        // Log::info("WifiAdapter", "AP Mode: SSID: {}, Password: {}", cache_ssid, cache_pass);
         if (cache_ssid.length() > 0 && cache_pass.length() > 0) {
           wifi_->set_ap_credentials(
             cache_ssid,
             cache_pass
           );
           wifi_->connect_to_ap();
+          Log::info("WifiAdapter", "Connecting to AP with SSID: {}", cache_ssid, cache_pass);
         }
       } else if (mode == WifiMode::softap_mode) { // softap
-        // TODO
+      //   // TODO
       } else if (mode == WifiMode::smartconfig_mode) { // smart config
         wifi_->start_smartconfig();
       } else if (mode == WifiMode::provisioning_mode) {
         wifi_->start_provision();
       }
-      else {
-        wifi_->connect_to_ap();
+      else if(mode == WifiMode::change_ssid_pass) {
+        auto cache_ssid = StorageNvsE::instance().read(SSID);
+        auto cache_key = StorageNvsE::instance().read(KEY);
+        Log::info("WifiAdapter", "Change SSID/Password: SSID: {}, Password: {}", cache_ssid, cache_pass);
+        if (cache_ssid.length() > 0 && cache_key.length() > 0) {
+          wifi_->set_ap_credentials(
+            cache_ssid,
+            cache_key
+          );
+          wifi_->connect_to_ap();
+          Log::info("WifiAdapter", "Connecting to AP with SSID: {}", cache_ssid, cache_pass);
+        }
+        else {
+          wifi_->connect_to_ap();
+        }
       }
     }
 
@@ -82,6 +101,7 @@ namespace iotTouch
 
     std::string WifiAdapter::getMacAddress()
     {
+      Log::info("WifiAdapter", "Device MAC Address: {}",  wifi_->get_mac_address());
       return wifi_->get_mac_address();
     }
 

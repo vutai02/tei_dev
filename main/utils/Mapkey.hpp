@@ -4,7 +4,7 @@
 #include <map>
 #include "common/ConfigConstant.h"
 
-namespace iotTouch
+namespace fireAlarm
 {
   class MapKey
   {

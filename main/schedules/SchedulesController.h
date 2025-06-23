@@ -15,7 +15,7 @@
 #include "common/ObjectUpdateStatus.h"
 #include "common/EventSleepLedRed.hpp"
 #include "common/SyncTimerSer.h"
-namespace iotTouch
+namespace fireAlarm
 {
 class SchedulesController
     : public smooth::core::Task,

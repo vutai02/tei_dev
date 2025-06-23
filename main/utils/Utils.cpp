@@ -4,7 +4,7 @@
 #include <iomanip>
 #include "Utils.h"
 
-namespace iotTouch
+namespace fireAlarm
 {
   void Utils::toupper(std::string& data)
   {

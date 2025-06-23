@@ -31,14 +31,14 @@
 
 using namespace std;
 using namespace std::chrono;
-using namespace iotTouch::common;
+using namespace fireAlarm::common;
 using namespace smooth::core::io;
 using namespace smooth::core::timer;
 using namespace smooth::core::logging;
 using namespace smooth::core::json_util;
 using namespace smooth::core::ipc;
 
-namespace iotTouch
+namespace fireAlarm
 {
 static constexpr const char* METRO_TAG = "Metro_tag";
 static constexpr std::chrono::milliseconds interval(1000);
@@ -73,7 +73,6 @@ void MetroController::init()
   }
 }
 
-
 // Send event from server to metro
 void MetroController::event(const ObjectDataSendToMetro& event)
 {
@@ -89,7 +88,7 @@ void MetroController::event(const ObjectDataSendToMetro& event)
       // Expected payload: {ID: "", ACTION: "update", DATA: {status: true, "name": "touch_0", ID: 0}}
       uint8_t id = stoi(default_value(data, ID, "0"));
       
-      // reset timer update status
+      // reset timer update status  
       cnt_timer_ = 0;
 
       if (data.contains(ENABLED)) {
@@ -245,8 +244,8 @@ void MetroController::event(const ObjectDataSendToMetro& event)
       std::string environment = default_value(data, ENVIRONMENT, "");
       if (action == "update" 
           && key == DEFAULT_TYPE_KEY 
-          && version != iotTouch::DataCache::instance().get(VERSION)
-          && environment == iotTouch::DataCache::instance().get(ENVIRONMENT)) {
+          && version != fireAlarm::DataCache::instance().get(VERSION)
+          && environment == fireAlarm::DataCache::instance().get(ENVIRONMENT)) {
         std::string link;
         std::string::size_type pos = default_value(data, DATA, "").find("?key=");
         if (pos) {
@@ -294,14 +293,14 @@ void MetroController::event(const ObjectDataSendToMetro& event)
     }
     else if (event.get_type() == TYPE_INTERNALL_TOUCH_SETTING) {
       nlohmann::json v;
-      v[VERSION] = iotTouch::DataCache::instance().get(VERSION);
-      v[MODEL] = iotTouch::DataCache::instance().get(MODEL);
-      v[ENVIRONMENT] = iotTouch::DataCache::instance().get(ENVIRONMENT);
-      v[PRODUCTION_DATE] = iotTouch::DataCache::instance().get(PRODUCTION_DATE);
-      v[CUSTOMER] = iotTouch::DataCache::instance().get(CUSTOMER);
-      v[MANUFACTURE] = iotTouch::DataCache::instance().get(MANUFACTURE);
-      v[FACTORY] = iotTouch::DataCache::instance().get(FACTORY);
-      v[IP] = iotTouch::DataCache::instance().get("ip");
+      v[VERSION] = fireAlarm::DataCache::instance().get(VERSION);
+      v[MODEL] = fireAlarm::DataCache::instance().get(MODEL);
+      v[ENVIRONMENT] = fireAlarm::DataCache::instance().get(ENVIRONMENT);
+      v[PRODUCTION_DATE] = fireAlarm::DataCache::instance().get(PRODUCTION_DATE);
+      v[CUSTOMER] = fireAlarm::DataCache::instance().get(CUSTOMER);
+      v[MANUFACTURE] = fireAlarm::DataCache::instance().get(MANUFACTURE);
+      v[FACTORY] = fireAlarm::DataCache::instance().get(FACTORY);
+      v[IP] = fireAlarm::DataCache::instance().get("ip");
 
       Publisher<ObjectDataDev2Ser>::publish(
         ObjectDataDev2Ser(
@@ -314,6 +313,7 @@ void MetroController::event(const ObjectDataSendToMetro& event)
     else if (event.get_type() == TYPE_EXTERNAL_STATUS_2_SERVER) {
       updateStatus(event.get_action());
     }
+    
   } catch(...) {
 
   }
@@ -339,17 +339,17 @@ void MetroController::event(const ObjectTypeButton& event)
   switch(event.get_type()) {
     case TypeButton::SMART:
     {
-      if (iotTouch::DataCache::instance().get(WIFI_MODE) 
+      if (fireAlarm::DataCache::instance().get(WIFI_MODE) 
             == std::to_string(WifiMode::smartconfig_mode) ||
-          iotTouch::DataCache::instance().get(WIFI_MODE) 
+          fireAlarm::DataCache::instance().get(WIFI_MODE) 
             == std::to_string(WifiMode::provisioning_mode)) {
-        iotTouch::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::ap_mode));
+        fireAlarm::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::ap_mode));
         Publisher<ObjectModeWifi>::publish(
           ObjectModeWifi(WifiMode::ap_mode)
         );
       }
       else {
-        iotTouch::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::smartconfig_mode));
+        fireAlarm::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::smartconfig_mode));
         Publisher<ObjectModeWifi>::publish(
           ObjectModeWifi(WifiMode::smartconfig_mode)
         );
@@ -358,17 +358,17 @@ void MetroController::event(const ObjectTypeButton& event)
       break;
     case TypeButton::PROVISIONING:
     {
-      if (iotTouch::DataCache::instance().get(WIFI_MODE) 
+      if (fireAlarm::DataCache::instance().get(WIFI_MODE) 
             == std::to_string(WifiMode::smartconfig_mode) ||
-          iotTouch::DataCache::instance().get(WIFI_MODE) 
+          fireAlarm::DataCache::instance().get(WIFI_MODE) 
             == std::to_string(WifiMode::provisioning_mode)) {
-        iotTouch::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::ap_mode));
+        fireAlarm::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::ap_mode));
         Publisher<ObjectModeWifi>::publish(
           ObjectModeWifi(WifiMode::ap_mode)
         );
       }
       else {
-        iotTouch::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::provisioning_mode));
+        fireAlarm::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::provisioning_mode));
         Publisher<ObjectModeWifi>::publish(
           ObjectModeWifi(WifiMode::provisioning_mode)
         );
@@ -409,7 +409,7 @@ void MetroController::event(const ObjectMetroPingServer& event)
 
 void MetroController::event(const smooth::core::timer::TimerExpiredEvent& event)
 {
-  if (iotTouch::DataCache::instance().get(ACTIVATE) == "1") {
+  if (fireAlarm::DataCache::instance().get(ACTIVATE) == "1") {
     cnt_timer_++;
     cnt_reset_mode_timer_++;
     if (cnt_timer_ >= MAX_TIMER_UPDATE_PING) {
@@ -418,16 +418,16 @@ void MetroController::event(const smooth::core::timer::TimerExpiredEvent& event)
     }
 
     if (cnt_reset_mode_timer_ >= TIMER_15_MINUTES) {
-      if (iotTouch::DataCache::instance().get(WIFI_MODE) 
+      if (fireAlarm::DataCache::instance().get(WIFI_MODE) 
               == std::to_string(WifiMode::smartconfig_mode) ||
-            iotTouch::DataCache::instance().get(WIFI_MODE) 
+            fireAlarm::DataCache::instance().get(WIFI_MODE) 
               == std::to_string(WifiMode::provisioning_mode)) {
 
         Publisher<led::EventLed>::publish(
           led::EventLed("exit")
         );
 
-        iotTouch::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::ap_mode));
+        fireAlarm::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::ap_mode));
         Publisher<ObjectModeWifi>::publish(
           ObjectModeWifi(WifiMode::ap_mode)
         );
@@ -503,7 +503,7 @@ void MetroController::ping()
 {
   nlohmann::json v{};
 
-  v["rssi"] = iotTouch::DataCache::instance().get("rssi");
+  v["rssi"] = fireAlarm::DataCache::instance().get("rssi");
   v[ID] = StorageNvsE::instance().read("id_syc");
 
   int32_t cnt_value = 0;

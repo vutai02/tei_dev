@@ -14,7 +14,7 @@
 #include "esp_flash_partitions.h"
 #include "esp_app_format.h"
 
-namespace iotTouch::ota
+namespace fireAlarm::ota
 {
   class Ota : 
     public smooth::core::Task,
@@ -44,8 +44,8 @@ namespace iotTouch::ota
     bool image_header_was_checked_ = false;
     const esp_partition_t *running_ = NULL;
     const esp_partition_t *update_partition_ = NULL;
-    iotTouch::system::SystemHelper helper_;
-    iotTouch::Utils utils_;
+    fireAlarm::system::SystemHelper helper_;
+    fireAlarm::Utils utils_;
   private:
     using ObjectOtaQueue = smooth::core::ipc::SubscribingTaskEventQueue<ObjectOta>;
     std::shared_ptr<ObjectOtaQueue> ev_ota_;

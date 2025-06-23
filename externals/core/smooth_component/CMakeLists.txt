@@ -43,6 +43,8 @@ idf_component_register(SRCS ${SMOOTH_SOURCES}
                             esp_event
                             esp_netif
                             wifi_provisioning
+                            esp_eth
+                            esp-modbus
                             )
 
 add_subdirectory(${COMPONENT_DIR}/../externals/fmt ${CMAKE_BINARY_DIR}/externals/fmt)
@@ -50,3 +52,4 @@ add_subdirectory(${COMPONENT_DIR}/../externals/fmt ${CMAKE_BINARY_DIR}/externals
 target_link_libraries(${COMPONENT_LIB} fmt)
 
 set_compile_options(${COMPONENT_LIB})
+

@@ -8,7 +8,7 @@
 #include "common/SyncTimerSer.h"
 #include <smooth/core/util/json_util.h>
 
-using namespace iotTouch::common;
+using namespace fireAlarm::common;
 using namespace std::chrono;
 using namespace smooth::core::ipc;
 using namespace smooth::core::json;
@@ -16,7 +16,7 @@ using namespace smooth::core::logging;
 using namespace smooth::core::json_util;
 using namespace smooth::core::filesystem;
 
-namespace iotTouch
+namespace fireAlarm
 {
   namespace network
   {

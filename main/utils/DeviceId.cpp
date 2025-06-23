@@ -17,7 +17,7 @@ using namespace smooth::core::util;
 using namespace smooth::core::logging;
 using namespace smooth::core::filesystem;
 
-namespace iotTouch
+namespace fireAlarm
 {
   static const auto id_file = FlashMount::instance().mount_point() / "dev_id.jsn";
 

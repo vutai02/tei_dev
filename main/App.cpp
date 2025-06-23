@@ -28,11 +28,11 @@
 #include "utils/DataCache.hpp"
 #include "storage/StorageInfoDevice.h"
 
-using namespace iotTouch::storage;
+using namespace fireAlarm::storage;
 
 using namespace std::chrono;
 using namespace smooth::core;
-using namespace iotTouch::common;
+using namespace fireAlarm::common;
 using namespace smooth::core::ipc;
 using namespace smooth::core::json;
 using namespace smooth::core::network;
@@ -43,7 +43,7 @@ using namespace smooth::core::network::event;
 using namespace smooth::application::network::http;
 using namespace smooth::application::hash::base64;
 
-namespace iotTouch
+namespace fireAlarm
 {
   static constexpr const char *App_TAG = "App";
   constexpr const int max_timer_ping_server = 30;
@@ -51,7 +51,7 @@ namespace iotTouch
   App::App()
       : Application(smooth::core::APPLICATION_BASE_PRIO, seconds{1}),
         network_status_(NetworkStatusQueue::create(3, *this, *this)),
-        //   io_(),
+        io_(),
         schedules_(),
         id_(),
         sntp_(*this),
@@ -59,7 +59,11 @@ namespace iotTouch
         storage_(App_TAG, *this),
         ota_(),
         metro_(),
-        led_(*this)
+        led_(*this),
+        EthAdapter_()
+        // Master_rs485_()
+        // rs485_() //MASTER
+        // RS485_()
   {
   }
 
@@ -70,23 +74,27 @@ namespace iotTouch
         static_cast<esp_log_level_t>(TOUCH_LOGGING_LEVEL));
 
     Application::init();
-
-    //   io_.start();
+    io_.start();
     schedules_.start();
+    // EthAdapter_.start();
     wifi_.start();
     //  ota_.start();
     metro_.start();
-
-    if (iotTouch::DataCache::instance().get(WIFI_MODE) == std::to_string(WifiMode::smartconfig_mode))
-    {
-      Publisher<led::EventLed>::publish(
-          led::EventLed("smart"));
-    }
-    if (iotTouch::DataCache::instance().get(WIFI_MODE) == std::to_string(WifiMode::provisioning_mode))
-    {
-      Publisher<led::EventLed>::publish(
-          led::EventLed("provisioning"));
-    }
+    // Master_rs485_.start();
+    // rs485_.start(); //MASTER
+    // RS485_.start();
+    
+    wifi_.setWifiMode(0);
+    // if (fireAlarm::DataCache::instance().get(WIFI_MODE) == std::to_string(WifiMode::smartconfig_mode))
+    // {
+    //   Publisher<led::EventLed>::publish(
+    //       led::EventLed("smart"));
+    // }
+    // if (fireAlarm::DataCache::instance().get(WIFI_MODE) == std::to_string(WifiMode::provisioning_mode))
+    // {
+    //   Publisher<led::EventLed>::publish(
+    //       led::EventLed("provisioning"));
+    // }
 
     received_content_.clear();
   }
@@ -96,7 +104,7 @@ namespace iotTouch
     Log::info(App_TAG, "[APP] Free memory: {} bytes", esp_get_free_heap_size());
 
     // SystemStatistics::instance().dump();
-    iotTouch::DataCache::instance().set("rssi", std::to_string(wifi_.getRssi()));
+    fireAlarm::DataCache::instance().set("rssi", std::to_string(wifi_.getRssi()));
 
     if (!initialize_status_)
     {
@@ -118,7 +126,7 @@ namespace iotTouch
 
     if (mqtt_ && mqtt_->get_cnt_reconnect_broker() >= 10)
     {
-      iotTouch::DataCache::instance().set(ACTIVATE, "0");
+      fireAlarm::DataCache::instance().set(ACTIVATE, "0");
       mqtt_->reset_cnt_reconnect_broker();
       mqtt_->disconnect_broker();
       stagePairActivate_ = 1;
@@ -131,7 +139,7 @@ namespace iotTouch
 
   void App::resetConnectWifi()
   {
-    if (iotTouch::DataCache::instance().get(ACTIVATE) == "1")
+    if (fireAlarm::DataCache::instance().get(ACTIVATE) == "1")
     {
       if (is_retry_connect_wifi_)
       {
@@ -162,16 +170,16 @@ namespace iotTouch
       average_status_wifi_ = 0;
       is_disconnect_broker_ = false;
 
-      if (iotTouch::DataCache::instance().get(ACTIVATE) == "0")
+      if (fireAlarm::DataCache::instance().get(ACTIVATE) == "0")
       {
         // activate
         auto [isExisting, ssid, password] = wifi_.getConfig();
         if (isExisting && ssid.length() > 0 && password.length() > 0)
         {
 
-          iotTouch::DataCache::instance().set(SSID, ssid);
-          iotTouch::DataCache::instance().set(KEY, password);
-          iotTouch::DataCache::instance().set(MAC_ADDR, wifi_.getMacAddress());
+          fireAlarm::DataCache::instance().set(SSID, ssid);
+          fireAlarm::DataCache::instance().set(KEY, password);
+          fireAlarm::DataCache::instance().set(MAC_ADDR, wifi_.getMacAddress());
 
           Publisher<led::EventLed>::publish(
               led::EventLed("receive_data"));
@@ -180,8 +188,8 @@ namespace iotTouch
       }
       else
       {
-        auto userMqtt = iotTouch::DataCache::instance().get(USER);
-        auto passMqtt = iotTouch::DataCache::instance().get(PASS);
+        auto userMqtt = fireAlarm::DataCache::instance().get(USER);
+        auto passMqtt = fireAlarm::DataCache::instance().get(PASS);
         auto link_ota = StorageNvsE::instance().read("link_ota");
         if (!link_ota.empty())
         {
@@ -209,7 +217,7 @@ namespace iotTouch
       }
     }
 
-    if (iotTouch::DataCache::instance().get(WIFI_MODE) != std::to_string(WifiMode::ap_mode))
+    if (fireAlarm::DataCache::instance().get(WIFI_MODE) != std::to_string(WifiMode::ap_mode))
     {
 
       cnt_reset_network_when_activate_++;
@@ -296,16 +304,16 @@ namespace iotTouch
             {
               stagePairActivate_++;
 
-              iotTouch::DataCache::instance().set(EXTERNAL_ID,
+              fireAlarm::DataCache::instance().set(EXTERNAL_ID,
                                                   default_value(bootstrap["result"], EXTERNAL_ID, ""));
-              iotTouch::DataCache::instance().set(EXTERNAL_KEY,
+              fireAlarm::DataCache::instance().set(EXTERNAL_KEY,
                                                   default_value(bootstrap["result"], EXTERNAL_KEY, ""));
 
               start_connect_server();
             }
             else if (bootstrap.contains("result") && bootstrap["result"].is_string())
             {
-              iotTouch::DataCache::instance().set(IP, default_value(bootstrap, "result", ""));
+              fireAlarm::DataCache::instance().set(IP, default_value(bootstrap, "result", ""));
               if (buff_)
                 buff_.reset();
 #if IS_SSL_REST_API == 1
@@ -327,22 +335,22 @@ namespace iotTouch
                 std::string mqtt_endpoint = default_value(bootstrap["result"], "ip", DEFAULT_ENDPOINT_CLOUD);
                 int mqtt_port = default_value(bootstrap["result"], "port", 1883);
 
-                iotTouch::DataCache::instance().set(USER, user);
-                iotTouch::DataCache::instance().set(PASS, pass);
-                iotTouch::DataCache::instance().set(CLIENT_ID, client_id);
-                iotTouch::DataCache::instance().set(MQTT_ENDPOINT, mqtt_endpoint);
-                iotTouch::DataCache::instance().set(MQTT_PORT, std::to_string(mqtt_port));
-                iotTouch::DataCache::instance().set(SCHEME, scheme);
+                fireAlarm::DataCache::instance().set(USER, user);
+                fireAlarm::DataCache::instance().set(PASS, pass);
+                fireAlarm::DataCache::instance().set(CLIENT_ID, client_id);
+                fireAlarm::DataCache::instance().set(MQTT_ENDPOINT, mqtt_endpoint);
+                fireAlarm::DataCache::instance().set(MQTT_PORT, std::to_string(mqtt_port));
+                fireAlarm::DataCache::instance().set(SCHEME, scheme);
 
-                iotTouch::DataCache::instance().set(ACTIVATE, "1");
-                iotTouch::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::ap_mode));
+                fireAlarm::DataCache::instance().set(ACTIVATE, "1");
+                fireAlarm::DataCache::instance().set(WIFI_MODE, std::to_string(WifiMode::ap_mode));
 
                 for (const auto &channel : bootstrap["result"]["channels"])
                 {
                   auto channelName = channel[NAME].get<std::string>();
                   std::string::size_type pos = channelName.find("_");
                   auto name = channelName.substr(0, pos);
-                  iotTouch::DataCache::instance().set(name, channel[ID]);
+                  fireAlarm::DataCache::instance().set(name, channel[ID]);
                 }
 
                 Publisher<TriggerUpdateStorage>::publish(
@@ -390,13 +398,13 @@ namespace iotTouch
   {
     if (!mqtt_)
     {
-      auto client_id = iotTouch::DataCache::instance().get(CLIENT_ID);
+      auto client_id = fireAlarm::DataCache::instance().get(CLIENT_ID);
       mqtt_ = std::make_unique<Mqtt>(client_id, *this, cmd_);
 
       /* Setup subscriptions control */
       {
         static std::string channelsControl = "channels/";
-        channelsControl.append(iotTouch::DataCache::instance().get("control"));
+        channelsControl.append(fireAlarm::DataCache::instance().get("control"));
         channelsControl.append("/messages");
 
         mqtt_->add_subscription(channelsControl);
@@ -408,11 +416,14 @@ namespace iotTouch
               try
               {
                 nlohmann::json json_ = nlohmann::json::parse(data);
-                auto id1 = iotTouch::DataCache::instance().get(USER);
+                auto id1 = fireAlarm::DataCache::instance().get(USER);
                 auto id2 = default_value(json_, ID, "");
                 if (id1 == id2)
                 {
                   auto payload = json_[DATA];
+                  // v[DATA1] = true;
+                  // DATA : { true
+                  // }
                   if (payload.is_object())
                   {
 
@@ -436,7 +447,7 @@ namespace iotTouch
               try
               {
                 nlohmann::json json_ = nlohmann::json::parse(data);
-                auto id1 = iotTouch::DataCache::instance().get(USER);
+                auto id1 = fireAlarm::DataCache::instance().get(USER);
                 auto id2 = default_value(json_, ID, "");
                 if (id1 == id2)
                 {
@@ -464,7 +475,7 @@ namespace iotTouch
               try
               {
                 nlohmann::json json_ = nlohmann::json::parse(data);
-                auto id1 = iotTouch::DataCache::instance().get(USER);
+                auto id1 = fireAlarm::DataCache::instance().get(USER);
                 auto id2 = default_value(json_, ID, "");
                 if (id1 == id2)
                 {
@@ -510,7 +521,7 @@ namespace iotTouch
               try
               {
                 nlohmann::json json_ = nlohmann::json::parse(data);
-                auto id1 = iotTouch::DataCache::instance().get(USER);
+                auto id1 = fireAlarm::DataCache::instance().get(USER);
                 auto id2 = default_value(json_, ID, "");
                 if (id1 == id2)
                 {
@@ -536,16 +547,16 @@ namespace iotTouch
     else
     {
       mqtt_->set_authorization(
-          iotTouch::DataCache::instance().get(USER),
-          iotTouch::DataCache::instance().get(PASS));
+          fireAlarm::DataCache::instance().get(USER),
+          fireAlarm::DataCache::instance().get(PASS));
 
       static std::string channelsConfig = "channels/";
-      channelsConfig.append(iotTouch::DataCache::instance().get("config"));
+      channelsConfig.append(fireAlarm::DataCache::instance().get("config"));
       channelsConfig.append("/messages");
 
       mqtt_->add_subscription(channelsConfig);
       static std::string channelsControl = "channels/";
-      channelsControl.append(iotTouch::DataCache::instance().get("control"));
+      channelsControl.append(fireAlarm::DataCache::instance().get("control"));
       channelsControl.append("/messages");
 
       mqtt_->add_subscription(channelsControl);
@@ -554,8 +565,8 @@ namespace iotTouch
 
       initialize_status_ = false;
 
-      std::string broker = iotTouch::DataCache::instance().get(MQTT_ENDPOINT);
-      int port = stoi(iotTouch::DataCache::instance().get(MQTT_PORT));
+      std::string broker = fireAlarm::DataCache::instance().get(MQTT_ENDPOINT);
+      int port = stoi(fireAlarm::DataCache::instance().get(MQTT_PORT));
       mqtt_->connect_to(broker, port);
     }
   }
@@ -565,7 +576,7 @@ namespace iotTouch
     Log::info(App_TAG, "status connect to server: {}", ev.is_connected());
     if (ev.is_connected())
     {
-      if (iotTouch::DataCache::instance().get(ACTIVATE) == "0")
+      if (fireAlarm::DataCache::instance().get(ACTIVATE) == "0")
       {
         if (!stagePairActivate_)
         {
@@ -580,7 +591,7 @@ namespace iotTouch
     else
     {
       // retry connect 2 server
-      if (iotTouch::DataCache::instance().get(ACTIVATE) == "0")
+      if (fireAlarm::DataCache::instance().get(ACTIVATE) == "0")
       {
         retry2ServerActivate_++;
         std::this_thread::sleep_for(std::chrono::milliseconds{1000});
@@ -599,8 +610,8 @@ namespace iotTouch
 
   void App::pairActivate()
   {
-    std::string ssid = iotTouch::DataCache::instance().get(SSID);
-    std::string mac = iotTouch::DataCache::instance().get(MAC_ADDR);
+    std::string ssid = fireAlarm::DataCache::instance().get(SSID);
+    std::string mac = fireAlarm::DataCache::instance().get(MAC_ADDR);
     if (ssid.length() > 0 && mac.length() > 0)
     {
 
@@ -620,7 +631,7 @@ namespace iotTouch
               endpoint_pair_activate,
               {{"UserAgent", "iotDevice"},
                {"Host",
-                iotTouch::DataCache::instance().get(CLOUD_ENDPOINT)},
+                fireAlarm::DataCache::instance().get(CLOUD_ENDPOINT)},
                {"key", DEFAULT_TYPE_KEY},
                {"macAddress", mac}},
               {}));
@@ -633,8 +644,8 @@ namespace iotTouch
 
   void App::getConfigServer()
   {
-    auto externalId = iotTouch::DataCache::instance().get(EXTERNAL_ID);
-    auto externalKey = iotTouch::DataCache::instance().get(EXTERNAL_KEY);
+    auto externalId = fireAlarm::DataCache::instance().get(EXTERNAL_ID);
+    auto externalKey = fireAlarm::DataCache::instance().get(EXTERNAL_KEY);
     if (externalId.length() > 0 && externalKey.length() > 0)
     {
       if (sock_)
@@ -644,7 +655,7 @@ namespace iotTouch
                 HTTPMethod::GET,
                 static_cast<std::string>(PREFIX_ENDPOINT) +
                     "/device/getConfig?externalId=" + externalId + "&externalKey=" + externalKey,
-                {{"Host", iotTouch::DataCache::instance().get(CLOUD_ENDPOINT)}},
+                {{"Host", fireAlarm::DataCache::instance().get(CLOUD_ENDPOINT)}},
                 {}));
         if (!isSent)
         {
@@ -691,8 +702,8 @@ namespace iotTouch
   {
     if (sock_)
     {
-      auto cloud_endpoint = iotTouch::DataCache::instance().get(CLOUD_ENDPOINT);
-      auto cloud_port = stoi(iotTouch::DataCache::instance().get(CLOUD_PORT));
+      auto cloud_endpoint = fireAlarm::DataCache::instance().get(CLOUD_ENDPOINT);
+      auto cloud_port = stoi(fireAlarm::DataCache::instance().get(CLOUD_PORT));
       bool is_start_socket = sock_->start(
           std::make_shared<IPv4>(
               cloud_endpoint,

@@ -4,7 +4,39 @@ set(SOURCES main.cpp
   App.h
   utils/DeviceId.cpp
   utils/DeviceId.h
+    # io/output/outputAlarm.cpp
+  # io/output/outputAlarm.h
   # network/MulticastDNS.h
+  
+
+  io/Button/button.cpp
+  io/Button/button.h
+  io/input/input.cpp
+  io/input/input.h
+  io/IoController.h
+  io/IoController.cpp
+
+  # RS485_master/core_master/master.cpp
+  # RS485_master/core_master/master.h
+  # RS485_master/define.h
+  # RS485_master/rs485.cpp
+  # RS485_master/rs485.h
+
+  # RS485_slave/slave/slave.cpp
+  # RS485_slave/slave/slave.h
+  # RS485_slave/RS485.cpp
+  # RS485_slave/RS485.h
+  # RS485_slave/define.h
+
+  rs485/core_master/Core.cpp
+  rs485/core_master/Core.h
+  rs485/define_res.h
+  rs485/rs485.cpp
+  rs485/rs485.h
+
+  
+  network/Ethernet.cpp
+  network/Ethernet.h
   network/WifiAdapter.h
   network/WifiAdapter.cpp
   network/Sntp.h

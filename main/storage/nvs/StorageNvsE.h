@@ -2,7 +2,7 @@
 
 #include "NvsEsp32.h"
 
-namespace iotTouch::storage
+namespace fireAlarm::storage
 {
   class StorageNvsE : NVS
   {

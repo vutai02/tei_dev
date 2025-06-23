@@ -18,10 +18,10 @@
 #include "common/EventLed.hpp"
 #include "nvs/StorageNvsE.h"
 
-using namespace iotTouch::storage;
+using namespace fireAlarm::storage;
 
-using namespace iotTouch::common;
-using namespace iotTouch::system;
+using namespace fireAlarm::common;
+using namespace fireAlarm::system;
 using namespace smooth::core;
 using namespace smooth::core::timer;
 using namespace smooth::core::ipc;
@@ -70,7 +70,7 @@ void Storage::initHw()
     }
 
     StorageNvsE::instance().initialize();
-    iotTouch::DataCache::instance();
+    fireAlarm::DataCache::instance();
 
     // Log::info(id_, "StorageWifi {}", StorageWifi::instance().get().dump());
     Log::info(id_, "StorageSchedule {}", StorageSchedule::instance().get().dump());
@@ -322,33 +322,33 @@ void Storage::event(const TriggerUpdateStorage &ev)
     auto& config_mqtt = configuration[MQTT];
     auto& topic = configuration[TOPIC];
 
-    config_mqtt[USER] = iotTouch::DataCache::instance().get(USER);
-    config_mqtt[PASS] = iotTouch::DataCache::instance().get(PASS);
-    config_mqtt[CLIENT_ID] = iotTouch::DataCache::instance().get(CLIENT_ID);
-    config_mqtt[MQTT_ENDPOINT] = iotTouch::DataCache::instance().get(MQTT_ENDPOINT);
-    config_mqtt[MQTT_PORT] = stoi(iotTouch::DataCache::instance().get(MQTT_PORT));
-    config_mqtt[SCHEME] = iotTouch::DataCache::instance().get(SCHEME);
+    config_mqtt[USER] = fireAlarm::DataCache::instance().get(USER);
+    config_mqtt[PASS] = fireAlarm::DataCache::instance().get(PASS);
+    config_mqtt[CLIENT_ID] = fireAlarm::DataCache::instance().get(CLIENT_ID);
+    config_mqtt[MQTT_ENDPOINT] = fireAlarm::DataCache::instance().get(MQTT_ENDPOINT);
+    config_mqtt[MQTT_PORT] = stoi(fireAlarm::DataCache::instance().get(MQTT_PORT));
+    config_mqtt[SCHEME] = fireAlarm::DataCache::instance().get(SCHEME);
     
-    configuration[ACTIVATE] = iotTouch::DataCache::instance().get(ACTIVATE) == "1" ? true: false;
-    configuration[DEVICE][ID] = iotTouch::DataCache::instance().get(EXTERNAL_ID);
-    configuration[DEVICE][TOKEN] = iotTouch::DataCache::instance().get(EXTERNAL_KEY);
+    configuration[ACTIVATE] = fireAlarm::DataCache::instance().get(ACTIVATE) == "1" ? true: false;
+    configuration[DEVICE][ID] = fireAlarm::DataCache::instance().get(EXTERNAL_ID);
+    configuration[DEVICE][TOKEN] = fireAlarm::DataCache::instance().get(EXTERNAL_KEY);
     
     topic["0"][NAME] = "config";
-    topic["0"][ID] = iotTouch::DataCache::instance().get("config");
+    topic["0"][ID] = fireAlarm::DataCache::instance().get("config");
 
     topic["1"][NAME] = "control";
-    topic["1"][ID] = iotTouch::DataCache::instance().get("control");
+    topic["1"][ID] = fireAlarm::DataCache::instance().get("control");
     
     topic["2"][NAME] = "notify";
-    topic["2"][ID] = iotTouch::DataCache::instance().get("notify");
+    topic["2"][ID] = fireAlarm::DataCache::instance().get("notify");
 
     StorageInfoDevice::instance().save();
     
     std::this_thread::sleep_for(std::chrono::milliseconds{ 40 });
 
     // update wifi
-    StorageNvsE::instance().write(SSID, iotTouch::DataCache::instance().get(SSID));
-    StorageNvsE::instance().write(KEY, iotTouch::DataCache::instance().get(KEY));
+    StorageNvsE::instance().write(SSID, fireAlarm::DataCache::instance().get(SSID));
+    StorageNvsE::instance().write(KEY, fireAlarm::DataCache::instance().get(KEY));
     StorageNvsE::instance().write(WIFI_MODE, WifiMode::ap_mode);
 
     StorageWifi::instance().save();

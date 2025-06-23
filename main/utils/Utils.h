@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-namespace iotTouch
+namespace fireAlarm
 {
   class Utils
   {

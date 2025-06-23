@@ -35,9 +35,9 @@ namespace smooth::core::io
 
             bool read();
 
-            Input(const Input&) = delete;
+           Input(const Input&) = delete;
 
-            Input& operator=(const Input&) = delete;
+            // Input& operator=(const Input&) = delete;
 
             bool operator==(const Input& other);
 

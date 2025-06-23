@@ -70,12 +70,12 @@ class Storage
     std::mutex guard_;
     void initHw();
 
-    iotTouch::system::SystemHelper helper_;
+    fireAlarm::system::SystemHelper helper_;
     smooth::core::filesystem::SPIFlash flash_ {
       smooth::core::filesystem::FlashMount::instance(),
       "app_storage",
       5,
       true
     };
-    iotTouch::Utils utils_;
+    fireAlarm::Utils utils_;
 };

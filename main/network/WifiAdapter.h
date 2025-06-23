@@ -6,14 +6,14 @@
 #include "utils/DeviceId.h"
 #include "Sntp.h"
 
-namespace iotTouch
+namespace fireAlarm
 {
   namespace network
   {
   class WifiAdapter: public smooth::core::ipc::IEventListener<ObjectModeWifi>
   {
     public:
-    WifiAdapter(smooth::core::Application& app, iotTouch::DeviceId& id, Sntp& sntp)
+    WifiAdapter(smooth::core::Application& app, fireAlarm::DeviceId& id, Sntp& sntp)
       : app_(app), id_(id), sntp_(sntp),
         modeWifi_(ObjectModeWifiQueue::create(2, app_, *this))
     {

@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace iotTouch
+namespace fireAlarm
 {
   class DeviceId
   {

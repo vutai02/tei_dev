@@ -1,6 +1,6 @@
 #pragma once
 
-namespace iotTouch::common
+namespace fireAlarm::common
 {
   constexpr const char* TYPE_EXTERNAL_CONTROL_TOUCH    = "DA01";
   constexpr const char* TYPE_EXTERNAL_SET_COUNTDOWN    = "DA03";
@@ -18,6 +18,15 @@ namespace iotTouch::common
   constexpr const char* TYPE_INTERNAL_SET_SCHEDULE     = "SCHEDULE";
   constexpr const char* TYPE_INTERNAL_RESET            = "RESET";
   constexpr const char* TYPE_INTERNALL_TOUCH_SETTING   = "DEV_INFO";
+
+
+  constexpr const char *TYPE_INTERNAL_ETH = "ETH";
+
+  constexpr const char *RECONNECT_ETH = "re_eth";
+  constexpr const char *STOP_ETH = "stop_eth";
+
+
+  constexpr const char *TYPE_EXTERNAL_TEM_HU = "tem_hu";
 
   // #define TOUCH_BUTTON_MAX_CHANGE_RATE_1   0.0249
   // #define TOUCH_BUTTON_MAX_CHANGE_RATE_2   0.0225

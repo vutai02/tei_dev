@@ -16,7 +16,7 @@ class Mqtt :
   public smooth::core::ipc::IEventListener<ObjectDataDev2Ser>
 {
   public:
-    Mqtt(std::string id, smooth::core::Task& task, iotTouch::CommandDispatcher& cmd);
+    Mqtt(std::string id, smooth::core::Task& task, fireAlarm::CommandDispatcher& cmd);
     ~Mqtt() override;
     
     void event(const smooth::application::network::mqtt::MQTTData& data) override;
@@ -60,7 +60,7 @@ class Mqtt :
       smooth::application::network::mqtt::QoS qos = smooth::application::network::mqtt::QoS::AT_LEAST_ONCE);
 
     smooth::core::Task& task_;
-    iotTouch::CommandDispatcher& cmd_;
+    fireAlarm::CommandDispatcher& cmd_;
     
     using MQTTQueue = smooth::core::ipc::TaskEventQueue<smooth::application::network::mqtt::MQTTData>;
 

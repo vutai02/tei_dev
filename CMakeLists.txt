@@ -6,7 +6,8 @@ if(${ESP_PLATFORM})
     include($ENV{IDF_PATH}/tools/cmake/project.cmake)
     # Include core as a component
     set(EXTRA_COMPONENT_DIRS
-            externals/core/smooth_component)
+            externals/core/smooth_component
+            externals/core/smooth_component/components)
     project(board_ship_V2)
 else()
     if(${APPLE})

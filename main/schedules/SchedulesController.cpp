@@ -16,15 +16,15 @@
 
 using namespace std;
 using namespace std::chrono;
-using namespace iotTouch::common;
+using namespace fireAlarm::common;
 using namespace smooth::core::io;
 using namespace smooth::core::timer;
 using namespace smooth::core::logging;
 using namespace smooth::core::util;
 using namespace smooth::core::ipc;
-using namespace iotTouch::storage;
+using namespace fireAlarm::storage;
 
-namespace iotTouch
+namespace fireAlarm
 {
 
 CronId id;

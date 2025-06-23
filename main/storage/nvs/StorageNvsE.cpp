@@ -1,9 +1,9 @@
 #include "StorageNvsE.h"
 #include "common/ConfigConstant.h"
 
-namespace iotTouch::storage
+namespace fireAlarm::storage
 {
-  using namespace iotTouch::common;
+  using namespace fireAlarm::common;
 
   StorageNvsE::StorageNvsE(){}
 

@@ -6,7 +6,7 @@
 #include <smooth/application/security/PasswordHash.h>
 #include <smooth/core/filesystem/SPIFlash.h>
 
-namespace iotTouch::storage
+namespace fireAlarm::storage
 {
   class StorageSchedule
   {

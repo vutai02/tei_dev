@@ -1,7 +1,7 @@
 #include "App.h"
 #include <smooth/core/SystemStatistics.h>
 
-using namespace iotTouch;
+using namespace fireAlarm;
 
 extern "C"
 {

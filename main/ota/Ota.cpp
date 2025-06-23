@@ -19,15 +19,15 @@
 
 using namespace std;
 using namespace std::chrono;
-using namespace iotTouch::ota;
-using namespace iotTouch::common;
+using namespace fireAlarm::ota;
+using namespace fireAlarm::common;
 using namespace smooth::core::ipc;
 using namespace smooth::core::logging;
 
 #define BUFFSIZE 1024
 
 
-namespace iotTouch::ota
+namespace fireAlarm::ota
 {
 
 #pragma GCC diagnostic push
@@ -75,13 +75,13 @@ void Ota::init()
   }
   esp_app_desc_t running_app_info;
   if (esp_ota_get_partition_description(running_, &running_app_info) == ESP_OK) {
-    iotTouch::DataCache::instance().set(VERSION, running_app_info.version);
-    iotTouch::DataCache::instance().set(MODEL, running_app_info.project_name);
-    iotTouch::DataCache::instance().set(PRODUCTION_DATE, running_app_info.date);
-    iotTouch::DataCache::instance().set(MANUFACTURE, "skytech");
-    iotTouch::DataCache::instance().set(CUSTOMER, "skytech");
-    iotTouch::DataCache::instance().set(FACTORY, "sieuthuat");
-    iotTouch::DataCache::instance().set(ENVIRONMENT, ENV);
+    fireAlarm::DataCache::instance().set(VERSION, running_app_info.version);
+    fireAlarm::DataCache::instance().set(MODEL, running_app_info.project_name);
+    fireAlarm::DataCache::instance().set(PRODUCTION_DATE, running_app_info.date);
+    fireAlarm::DataCache::instance().set(MANUFACTURE, "skytech");
+    fireAlarm::DataCache::instance().set(CUSTOMER, "skytech");
+    fireAlarm::DataCache::instance().set(FACTORY, "sieuthuat");
+    fireAlarm::DataCache::instance().set(ENVIRONMENT, ENV);
   }
 }
 

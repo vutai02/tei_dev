@@ -1,7 +1,8 @@
 dependencies:
   espressif/libsodium:
-    version: "==1.0.20"
+    version: ==1.0.20
     rules:
-      - if: "idf_version >=5.0"
+    - if: idf_version >=5.0
   idf:
-    version: ">=4.1"
+    version: '>=4.1'
+  espressif/ethernet_init: ^0.0.7

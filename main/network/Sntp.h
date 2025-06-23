@@ -8,7 +8,7 @@
 #include <smooth/core/ipc/IEventListener.h>
 #include <smooth/core/filesystem/SPIFlash.h>
 
-namespace iotTouch
+namespace fireAlarm
 {
     namespace network
     {

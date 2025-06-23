@@ -14,7 +14,7 @@ using namespace smooth::core::filesystem;
 using namespace smooth::core::json_util;
 using namespace smooth::core::json;
 using namespace smooth::core::logging;
-using namespace iotTouch::common;
+using namespace fireAlarm::common;
 
 namespace led
 {

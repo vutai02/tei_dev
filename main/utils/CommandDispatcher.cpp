@@ -1,6 +1,6 @@
 #include "utils/CommandDispatcher.h"
 
-namespace iotTouch
+namespace fireAlarm
 {
   void CommandDispatcher::process(const std::string& command, const std::string& data, const std::string& id_package)
   {

@@ -2,3 +2,15 @@
 [submodule "externals/Smooth"]
 	path = externals/Smooth
 	url = https://github.com/luuvt/Smooth.git
+[submodule "components/esp-modbus"]
+	path = components/esp-modbus
+	url = https://github.com/espressif/esp-modbus.git
+[submodule "external/core/esp-modbus"]
+	path = external/core/esp-modbus
+	url = https://github.com/espressif/esp-modbus.git
+[submodule "externals/core/esp-modbus"]
+	path = externals/core/esp-modbus
+	url = https://github.com/espressif/esp-modbus.git
+[submodule "externals/core/components/esp-modbus"]
+	path = externals/core/components/esp-modbus
+	url = https://github.com/espressif/esp-modbus.git
